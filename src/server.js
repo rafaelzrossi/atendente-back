@@ -1,17 +1,19 @@
 const socketio = require('socket.io');
-
-const _express = require('express');
-const express = _express();
+const express = require('express');
 const cors = require('cors');
 const http = require('http');
 
-const server = http.Server(express);
+const app = express();
+
+
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+
+const server = http.Server(app);
+
 io = socketio(server);
-
-
-express.use(_express.json());
-express.use(_express.urlencoded({ extended: false }));
-express.use(cors());
 
 // io.attach(server, {
 //   pingInterval: 10000,
@@ -19,10 +21,6 @@ express.use(cors());
 //   cookie: false
 // });
 
-
-
-// const connected = [];
-const connections = [];
 
 io.on('connect', socket => {
   const { type } = socket.handshake.query;
@@ -59,4 +57,4 @@ io.on('connect', socket => {
 });
 
 
-  server.listen(process.env.PORT || 3333, "0.0.0.0");
+server.listen(process.env.PORT || 3333, "0.0.0.0");
