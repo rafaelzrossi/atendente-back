@@ -2,12 +2,17 @@ const io = require('socket.io')({
   serveClient: false,
 });
 
-const express = require('express')();
+io.origins(['*']);
+
+const _express = require('express');
+const express = _express();
 const cors = require('cors');
 const http = require('http');
 
-express.use(cors());
 const server = http.Server(express);
+express.use(_express.json());
+express.use(_express.urlencoded({ extended: false }));
+express.use(cors());
 
 io.attach(server, {
   pingInterval: 10000,
