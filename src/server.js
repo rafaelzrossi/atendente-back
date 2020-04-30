@@ -1,8 +1,4 @@
-const io = require('socket.io')({
-  serveClient: false,
-});
-
-io.origins(['*']);
+const socketio = require('socket.io');
 
 const _express = require('express');
 const express = _express();
@@ -14,13 +10,13 @@ express.use(_express.json());
 express.use(_express.urlencoded({ extended: false }));
 express.use(cors());
 
-io.attach(server, {
-  pingInterval: 10000,
-  pingTimeout: 5000,
-  cookie: false
-});
+// io.attach(server, {
+//   pingInterval: 10000,
+//   pingTimeout: 5000,
+//   cookie: false
+// });
 
-
+io = socketio(server);
 
 server.listen(process.env.PORT || 3333, "0.0.0.0");
 
