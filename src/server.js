@@ -13,7 +13,7 @@ app.use(cors());
 
 const server = http.Server(app);
 
-io = socketio(server);
+io = socketio(server, { origins: '*:*' });
 
 // io.attach(server, {
 //   pingInterval: 10000,
