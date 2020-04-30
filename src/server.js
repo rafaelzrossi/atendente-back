@@ -6,6 +6,9 @@ const cors = require('cors');
 const http = require('http');
 
 const server = http.Server(express);
+io = socketio(server);
+
+
 express.use(_express.json());
 express.use(_express.urlencoded({ extended: false }));
 express.use(cors());
@@ -16,18 +19,16 @@ express.use(cors());
 //   cookie: false
 // });
 
-io = socketio(server);
 
-server.listen(process.env.PORT || 3333, "0.0.0.0");
 
 // const connected = [];
 const connections = [];
 
 io.on('connect', socket => {
   const { type } = socket.handshake.query;
-
+  
   console.log(type, socket.id);
-
+  
   socket.emit('connected', socket.id);
   
   socket.on('attach', target => {
@@ -40,7 +41,7 @@ io.on('connect', socket => {
       socket.to(target).emit('mouseMove', coordinates);
     }
   })
-
+  
   socket.on('mouseClick', (target) => {
     if(target){
       //console.log(`to: ${target} \nEmit: ${param}`);
@@ -53,6 +54,9 @@ io.on('connect', socket => {
       socket.to(target).emit('keyPress', key);
     }
   })
-
-
+  
+  
 });
+
+
+  server.listen(process.env.PORT || 3333, "0.0.0.0");
