@@ -2,13 +2,20 @@ const io = require('socket.io')({
   serveClient: false,
 });
 
-const server = require('http').createServer();
+const express = require('express')();
+const cors = require('cors');
+const http = require('http');
+
+express.use(cors());
+const server = http.Server(express);
 
 io.attach(server, {
   pingInterval: 10000,
   pingTimeout: 5000,
   cookie: false
 });
+
+
 
 server.listen(process.env.PORT || 3333, "0.0.0.0");
 
