@@ -15,7 +15,7 @@ app.use(cors({
 
 const server = http.Server(app);
 
-io = socketio(server, { origins: ['https://atendentevirutalapp.herokuapp.com'] });
+io = socketio(server, { origins: ['*:*'] });
 
 // io.attach(server, {
 //   pingInterval: 10000,
