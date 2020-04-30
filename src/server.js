@@ -5,18 +5,13 @@ const http = require('http');
 
 const app = express();
 
-app.all('*', function(req, res, next) {
-  var origin = req.get('origin'); 
-  res.header('Access-Control-Allow-Origin', origin);
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({
+  origin: (o, callback) => callback(null, true),
+}));
 
 const server = http.Server(app);
 
@@ -27,13 +22,6 @@ io = socketio(server, { origins: '*:*' });
 //   pingTimeout: 5000,
 //   cookie: false
 // });
-
-
-
-
-
-
-
 
 
 io.on('connect', socket => {
