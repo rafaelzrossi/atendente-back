@@ -13,17 +13,35 @@ app.use(cors({
 
 const server = http.Server(app);
 
-io = socketio(server, { origins: ['*:*'] });
+const io = socketio(server, { origins: ['*:*'] });
+
+let clientFree = [];
 
 io.on('connect', socket => {
-  const { type } = socket.handshake.query;
+  const { type, name } = socket.handshake.query;
   
-  console.log(type, socket.id);
+  //console.log(type, socket.id);
+  if(type === 'client' && name){
+    // console.log(name)
+    clientFree.push({id: socket.id, name});
+    io.emit('getClients', clientFree);
+  }
   
   socket.emit('connected', socket.id);
+
+  socket.on('getClients', () => {
+    socket.emit('getClients', clientFree);
+  })
+
+  socket.on('addClient', () => {
+    clientFree.push({id: socket.id, name});
+    io.emit('getClients', clientFree);
+  })
   
   socket.on('attach', target => {
+    clientFree = clientFree.filter(e => e.id !== target);
     socket.to(target).emit('attach', socket.id);
+    io.emit('getClients', clientFree);
   })
   
   socket.on('setPath', ({target, pathname}) => {
@@ -50,6 +68,11 @@ io.on('connect', socket => {
     }
   })
   
+  socket.on('disconnect', ()  => {
+    clientFree = clientFree.filter(e => e.id !== socket.id);
+    io.emit('getClients', clientFree);
+    // console.log('Disconnecting : ', socket.id);
+  });
   
 });
 
