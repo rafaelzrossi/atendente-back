@@ -37,6 +37,10 @@ io.on('connect', socket => {
     clientFree.push({id: socket.id, name});
     io.emit('getClients', clientFree);
   })
+
+  socket.on('keepAlive', (target) => {
+    socket.to(target).emit('keepAlive', socket.id);
+  })
   
   socket.on('attach', target => {
     clientFree = clientFree.filter(e => e.id !== target);
