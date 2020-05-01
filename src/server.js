@@ -5,8 +5,6 @@ const http = require('http');
 
 const app = express();
 
-
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
@@ -17,13 +15,6 @@ const server = http.Server(app);
 
 io = socketio(server, { origins: ['*:*'] });
 
-// io.attach(server, {
-//   pingInterval: 10000,
-//   pingTimeout: 5000,
-//   cookie: false
-// });
-
-
 io.on('connect', socket => {
   const { type } = socket.handshake.query;
   
@@ -33,6 +24,10 @@ io.on('connect', socket => {
   
   socket.on('attach', target => {
     socket.to(target).emit('attach', socket.id);
+  })
+  
+  socket.on('setPath', ({target, pathname}) => {
+    socket.to(target).emit('setPath', pathname);
   })
 
   socket.on('mouseMove', ({target, coordinates}) => {
