@@ -62,10 +62,10 @@ io.on('connect', socket => {
     }
   })
   
-  socket.on('mouseClick', (target) => {
+  socket.on('mouseClick', ({target, coordinates}) => {
     if(target){
       //console.log(`to: ${target} \nEmit: ${param}`);
-      socket.to(target).emit('mouseClick', socket.id);
+      socket.to(target).emit('mouseClick', coordinates);
     }
   })
   socket.on('keyPress', ({target, key}) => {
