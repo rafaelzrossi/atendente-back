@@ -41,6 +41,9 @@ io.on('connect', socket => {
   socket.on('keepAlive', (target) => {
     socket.to(target).emit('keepAlive', socket.id);
   })
+  socket.on('setWindow', ({target, width, height}) => {
+    socket.to(target).emit('setWindow', {width, height});
+  })
   
   socket.on('attach', target => {
     clientFree = clientFree.filter(e => e.id !== target);
